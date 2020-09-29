@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import {FlatList, Image, StyleSheet, Text, TextInput, View} from 'react-native';
 import Button from './Button';
 
 const App = () => {
-  const [contador, setContador] = useState(0);
   const [mensagem, setMensagem] = useState('');
+  const [competidores, setCompetidores] = useState();
+  const [competidor, setCompetidor] = useState('');
 
   const mensagens = [
     'mensagem 1',
@@ -15,57 +16,95 @@ const App = () => {
   ];
 
   useEffect(() => {
+    setCompetidores([
+      {nome: 'Daniel', pizzas: 2},
+      {nome: 'Diogo', pizzas: 1},
+      {nome: 'João', pizzas: 0},
+    ]);
+  }, []);
+
+  useEffect(() => {
     const numeroAleatorio = Math.floor(Math.random() * 5);
     const mensagemEscolhida = mensagens[numeroAleatorio];
     setMensagem(mensagemEscolhida);
-  }, [mensagens]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  const aumentarContador = () => {
-    setContador(contador + 1);
+  const adicionarPizzas = (item) => {
+    const newCompetidores = competidores.map((itemCompetidor) => {
+      if (itemCompetidor.nome === item.nome) {
+        itemCompetidor.pizzas = itemCompetidor.pizzas + 1;
+      }
+      return itemCompetidor;
+    });
+    setCompetidores(newCompetidores);
   };
 
-  const diminuirContador = () => {
-    if (contador === 0) {
-      Alert.alert(
-        'Erro',
-        'Não é possível registrar números menores que 0 (zero)',
-      );
-      return;
-    }
-    setContador(contador - 1);
-  };
-
-  const zerarContador = () => {
-    if (contador === 0) {
-      Alert.alert('Erro', 'Seu contador já está zerado!');
-    }
-    setContador(0);
+  const adicionarCompetidor = () => {
+    const competidorObj = {nome: competidor, pizzas: 0};
+    setCompetidores([...competidores, competidorObj]);
   };
 
   return (
-    <>
-      <Text style={{alignSelf: 'center', marginTop: 20, fontSize: 18}}>
-        {mensagem}
-      </Text>
-      <Text style={styles.display}>{contador}</Text>
-      <View style={styles.buttonRowContainer}>
-        <Button
-          buttonStyle={{backgroundColor: '#269e3e'}}
-          title="Aumentar"
-          onPress={aumentarContador}
-        />
-        <Button
-          buttonStyle={{backgroundColor: '#c20000'}}
-          title="Diminuir"
-          onPress={diminuirContador}
-        />
-      </View>
-      <Button
-        buttonStyle={{backgroundColor: '#dbbf1f'}}
-        title="Zerar"
-        onPress={zerarContador}
+    <View style={{flex: 1}}>
+      <Image
+        source={{
+          uri:
+            'https://media-cdn.tripadvisor.com/media/photo-s/0d/99/1e/d3/pizza-marguerita.jpg',
+        }}
+        style={{
+          resizeMode: 'cover',
+          height: 200,
+        }}
       />
-    </>
+      <View style={{flex: 1, marginTop: 20}}>
+        <Text style={{alignSelf: 'center', marginTop: 20, fontSize: 18}}>
+          {mensagem}
+        </Text>
+        {
+          <FlatList
+            data={competidores}
+            renderItem={({item}) => (
+              <View style={styles.itemContainer}>
+                <Text style={styles.itemNome}>{item.nome}</Text>
+                <View style={styles.itemPizzas}>
+                  <Text style={styles.itemPizzasText}>{item.pizzas}</Text>
+                  <Button
+                    buttonStyle={styles.itemBtnAdd}
+                    title="+"
+                    onPress={() => adicionarPizzas(item)}
+                  />
+                </View>
+              </View>
+            )}
+            keyExtractor={(item) => item.nome}
+          />
+        }
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <TextInput
+            style={{
+              height: 40,
+              borderColor: 'gray',
+              borderWidth: 1,
+              marginBottom: 10,
+              marginHorizontal: 20,
+              flex: 1,
+            }}
+            onChangeText={setCompetidor}
+            value={competidor}
+          />
+          <Button
+            buttonStyle={{marginTop: 0, marginBottom: 10}}
+            title="+"
+            onPress={adicionarCompetidor}
+          />
+        </View>
+      </View>
+    </View>
   );
 };
 
@@ -77,9 +116,28 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#424242',
   },
-  buttonRowContainer: {
+  itemContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    alignItems: 'center',
+    padding: 10,
+    marginTop: 5,
+    justifyContent: 'space-between',
+  },
+  itemNome: {
+    fontSize: 18,
+    marginLeft: 10,
+  },
+  itemPizzas: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  itemPizzasText: {fontSize: 18},
+  itemBtnAdd: {
+    borderRadius: 100,
+    padding: 10,
+    marginTop: 0,
+    marginHorizontal: 0,
+    marginLeft: 15,
   },
 });
 
