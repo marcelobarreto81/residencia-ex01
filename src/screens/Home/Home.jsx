@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, Image, StyleSheet, Text, TextInput, View} from 'react-native';
-import Button from './Button';
+import {FlatList, Image, Text, TextInput, View} from 'react-native';
+import Button from '../../components/Button/Button';
+import styles from './styles';
 
-const App = () => {
+const Home = ({navigation}) => {
   const [mensagem, setMensagem] = useState('');
   const [competidores, setCompetidores] = useState();
   const [competidor, setCompetidor] = useState('');
@@ -30,6 +31,10 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleGoToWelcome = () => {
+    navigation.navigate('Welcome');
+  };
+
   const adicionarPizzas = (item) => {
     const newCompetidores = competidores.map((itemCompetidor) => {
       if (itemCompetidor.nome === item.nome) {
@@ -46,21 +51,17 @@ const App = () => {
   };
 
   return (
-    <View style={{flex: 1}}>
+    <View style={styles.container}>
       <Image
         source={{
           uri:
             'https://media-cdn.tripadvisor.com/media/photo-s/0d/99/1e/d3/pizza-marguerita.jpg',
         }}
-        style={{
-          resizeMode: 'cover',
-          height: 200,
-        }}
+        style={styles.image}
       />
-      <View style={{flex: 1, marginTop: 20}}>
-        <Text style={{alignSelf: 'center', marginTop: 20, fontSize: 18}}>
-          {mensagem}
-        </Text>
+      <View style={styles.mensagemContainer}>
+        <Button title="Navegar" onPress={handleGoToWelcome} />
+        <Text style={styles.mensagemText}>{mensagem}</Text>
         {
           <FlatList
             data={competidores}
@@ -80,25 +81,14 @@ const App = () => {
             keyExtractor={(item) => item.nome}
           />
         }
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}>
+        <View style={styles.textInputContainer}>
           <TextInput
-            style={{
-              height: 40,
-              borderColor: 'gray',
-              borderWidth: 1,
-              marginBottom: 10,
-              marginHorizontal: 20,
-              flex: 1,
-            }}
+            style={styles.textInput}
             onChangeText={setCompetidor}
             value={competidor}
           />
           <Button
-            buttonStyle={{marginTop: 0, marginBottom: 10}}
+            buttonStyle={styles.button}
             title="+"
             onPress={adicionarCompetidor}
           />
@@ -108,37 +98,4 @@ const App = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  display: {
-    alignSelf: 'center',
-    marginTop: 30,
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#424242',
-  },
-  itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    marginTop: 5,
-    justifyContent: 'space-between',
-  },
-  itemNome: {
-    fontSize: 18,
-    marginLeft: 10,
-  },
-  itemPizzas: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  itemPizzasText: {fontSize: 18},
-  itemBtnAdd: {
-    borderRadius: 100,
-    padding: 10,
-    marginTop: 0,
-    marginHorizontal: 0,
-    marginLeft: 15,
-  },
-});
-
-export default App;
+export default Home;
