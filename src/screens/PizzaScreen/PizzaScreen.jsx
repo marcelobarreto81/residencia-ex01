@@ -3,7 +3,7 @@ import {FlatList, Image, Text, TextInput, View} from 'react-native';
 import Button from '../../components/Button/Button';
 import styles from './styles';
 
-const Home = ({navigation}) => {
+const PizzaScreen = ({navigation}) => {
   const [mensagem, setMensagem] = useState('');
   const [competidores, setCompetidores] = useState();
   const [competidor, setCompetidor] = useState('');
@@ -98,4 +98,4 @@ const Home = ({navigation}) => {
   );
 };
 
-export default Home;
+export default PizzaScreen;
