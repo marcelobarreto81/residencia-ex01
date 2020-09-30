@@ -6,14 +6,14 @@ const Welcome = ({navigation}) => {
   const goToPizzaScreen = () => {
     navigation.reset({
       index: 0,
-      routes: [{name: 'PizzaScreen'}],
+      routes: [{name: 'Root'}],
     });
   };
 
   const goToTemakiScreen = () => {
     navigation.reset({
       index: 0,
-      routes: [{name: 'TemakiScreen'}],
+      routes: [{name: 'Root'}],
     });
   };
 
